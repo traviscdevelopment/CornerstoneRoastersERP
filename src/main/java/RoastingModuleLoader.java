@@ -21,6 +21,8 @@ public class RoastingModuleLoader {
                 crs.setVisible(true);
             }
         });
+
+        //loads the roasting settings window
         loadSettingsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

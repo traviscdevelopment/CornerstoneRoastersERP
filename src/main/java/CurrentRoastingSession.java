@@ -2,14 +2,11 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class CurrentRoastingSession {
     private JPanel crs;
@@ -20,9 +17,8 @@ public class CurrentRoastingSession {
     private JScrollPane roastBatchPanel1;
     private int bagsWanted;
     private int roastsPerBag = 2;
-    private ArrayList roasts;
     private String date;
-    private ArrayList roasts2;
+    private ArrayList roasts;
 
 
     //creates roasting session window
@@ -46,6 +42,7 @@ public class CurrentRoastingSession {
 
     //method for setting up and initalizing the current roasting session
     private void intialization(){
+        //recreate Cache Table since starting a new roast
         new DatabaseConnection().recreateCacheTable();
 
         //setting current date into roasting module
@@ -76,25 +73,22 @@ public class CurrentRoastingSession {
         }
 
         //initalizing roasts arraylist for input
-        roasts = new ArrayList<JTextField>();
-        roasts2 = new ArrayList<RoastingBatch>();
+        roasts = new ArrayList<RoastingBatch>();
 
-        //creating roasts input form based on roasts needed
+        //Creating Roast Input Form
         for(int x=0; x< roastsNeeded; x++){
-            JLabel label = new JLabel((x + 1) + ")     ");//roast title and formating
+            //Batch Numbers
+            JLabel label = new JLabel((x + 1) + ")     ");
             label.setHorizontalAlignment(JLabel.RIGHT);
             label.setForeground(Color.WHITE);
             label.setFont(new Font("Calibri",Font.PLAIN,18));
             roastBatchPanel.add(label);
 
+            //Batch Input fields and initializing Roasting Batch Objects
             JTextField input = new JTextField(4);
-
-
-
             RoastingBatch rb = new RoastingBatch(x+1,getGramsPerRoast(),bagsWanted);
 
-
-
+            //making it so if the Batch input is ever changed it automatically updates the RB object
             input.getDocument().addDocumentListener(new DocumentListener() {
                 @Override
                 public void insertUpdate(DocumentEvent e) {
@@ -125,13 +119,14 @@ public class CurrentRoastingSession {
                 }
             });
 
-
+            //adding input field to the panel and control array list
             roastBatchPanel.add(input);
-            roasts2.add(rb);
+            roasts.add(rb);
         }
 
     }
 
+    //function to get the grams per roast setting from the database
     private double getGramsPerRoast(){
         try{
         ResultSet rs = new DatabaseConnection().getRoastSettings();

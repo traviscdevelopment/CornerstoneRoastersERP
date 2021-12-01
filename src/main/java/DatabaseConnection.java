@@ -1,4 +1,3 @@
-import org.apache.commons.dbutils.DbUtils;
 import org.apache.derby.shared.common.error.DerbySQLIntegrityConstraintViolationException;
 
 import java.sql.*;
@@ -7,7 +6,6 @@ import java.sql.*;
 public class DatabaseConnection {
     //created INIT Variables
     String urlOpen = "jdbc:derby:crERP;create=true";
-    String urlClose = "jdbc:derby:;shutdown=true";
     Connection conn;
     Statement state;
     DatabaseMetaData dmbd;
@@ -68,23 +66,6 @@ public class DatabaseConnection {
         }
     }
 
-    public void recreateCacheTable(){
-        try{
-            openConnection();
-
-            state.execute("DROP TABLE CACHE_SESSION");
-
-            createCacheSession();
-        }catch(SQLException e){
-            e.printStackTrace();
-        }
-    }
-
-    private void createCacheSession() throws SQLException {
-        state.execute("create table cache_session(roastNumber SMALLINT NOT NULL PRIMARY KEY , gramsUsed DOUBLE, " +
-                "gramsProduced DOUBLE, poundsUsed DOUBLE, poundsProduced DOUBLE, bagsWanted SMALLINT)");
-    }
-
     //creates and initalizes the roast settings table
     private void createRoastSettingsTable() throws SQLException {
         state.execute("create table roast_settings(settingName varchar(8), value varchar(8))");
@@ -103,6 +84,7 @@ public class DatabaseConnection {
         ps.executeUpdate();
     }
 
+    //function to get the settings from the roast settings database
     public ResultSet getRoastSettings(){
         try{
             openConnection();
@@ -115,6 +97,7 @@ public class DatabaseConnection {
         return null;
     }
 
+    //function for changing roast settings
     public void setRoastSettings(int rpb, int gpb, int gpr){
         try{
             openConnection();
@@ -138,6 +121,26 @@ public class DatabaseConnection {
         }
     }
 
+    //creates Cache Session Table for roasting session saving
+    private void createCacheSession() throws SQLException {
+        state.execute("create table cache_session(roastNumber SMALLINT NOT NULL PRIMARY KEY , gramsUsed DOUBLE, " +
+                "gramsProduced DOUBLE, poundsUsed DOUBLE, poundsProduced DOUBLE, bagsWanted SMALLINT)");
+    }
+
+    //recreates cache table when new roasting session is started
+    public void recreateCacheTable(){
+        try{
+            openConnection();
+
+            state.execute("DROP TABLE CACHE_SESSION");
+
+            createCacheSession();
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    //function to update the cache session, first it tried an insert and on failure updates the correct rows data
     public void setCacheSession(int roastNumber,double gramsUsed,
                                 double gramsProduced,double poundsUsed,double poundsProduced, int bagsWanted){
         try{

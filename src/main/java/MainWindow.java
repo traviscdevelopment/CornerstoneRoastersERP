@@ -1,9 +1,6 @@
 import javax.swing.*;
-import javax.xml.crypto.Data;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import static javax.swing.JOptionPane.showMessageDialog;
 
 
 public class MainWindow {
@@ -19,16 +16,12 @@ public class MainWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(MainPanel,"This Module is Currently Not Implemented.");
-                //new DatabaseConnection().test2();
             }
         });
         cuppingModuleButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(MainPanel,"This Module is Currently Not Implemented.");
-
-                //new DatabaseConnection().build();
-
             }
         });
         roastingModuleButton.addActionListener(new ActionListener() {
@@ -42,6 +35,7 @@ public class MainWindow {
     }
 
     public static void main(String[] args) {
+        //checking the database for all tables to be created and validated
         new DatabaseConnection().tableCheck();
 
         //creating main window on software launch
