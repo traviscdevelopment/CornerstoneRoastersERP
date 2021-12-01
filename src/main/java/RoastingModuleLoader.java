@@ -21,6 +21,13 @@ public class RoastingModuleLoader {
                 crs.setVisible(true);
             }
         });
+        loadSettingsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame rs = new RoastingSettings().OpenRoastingSettings();
+                rs.setVisible(true);
+            }
+        });
     }
 
     //method to open the roasting module loader window

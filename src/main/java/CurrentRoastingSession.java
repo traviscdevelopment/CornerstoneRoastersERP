@@ -1,8 +1,15 @@
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class CurrentRoastingSession {
     private JPanel crs;
@@ -15,6 +22,8 @@ public class CurrentRoastingSession {
     private int roastsPerBag = 2;
     private ArrayList roasts;
     private String date;
+    private ArrayList roasts2;
+
 
     //creates roasting session window
     public JFrame OpenCurrentRoastingSession(int bagsWanted){
@@ -37,6 +46,8 @@ public class CurrentRoastingSession {
 
     //method for setting up and initalizing the current roasting session
     private void intialization(){
+        new DatabaseConnection().recreateCacheTable();
+
         //setting current date into roasting module
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         date = LocalDate.now().format(formatter);
@@ -66,6 +77,7 @@ public class CurrentRoastingSession {
 
         //initalizing roasts arraylist for input
         roasts = new ArrayList<JTextField>();
+        roasts2 = new ArrayList<RoastingBatch>();
 
         //creating roasts input form based on roasts needed
         for(int x=0; x< roastsNeeded; x++){
@@ -75,8 +87,61 @@ public class CurrentRoastingSession {
             label.setFont(new Font("Calibri",Font.PLAIN,18));
             roastBatchPanel.add(label);
 
-            //creates text input box
-            roasts.add(roastBatchPanel.add(new JTextField(4)));
+            JTextField input = new JTextField(4);
+
+
+
+            RoastingBatch rb = new RoastingBatch(x+1,getGramsPerRoast(),bagsWanted);
+
+
+
+            input.getDocument().addDocumentListener(new DocumentListener() {
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    try{
+                        rb.setgramsProduced(Double.valueOf(input.getText()));}
+                    catch (NumberFormatException err){
+                        rb.setgramsProduced(0);
+                    }
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    try{
+                        rb.setgramsProduced(Double.valueOf(input.getText()));}
+                    catch (NumberFormatException err){
+                        rb.setgramsProduced(0);
+                    }
+
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    try{
+                        rb.setgramsProduced(Double.valueOf(input.getText()));}
+                    catch (NumberFormatException err){
+                        rb.setgramsProduced(0);
+                    }
+                }
+            });
+
+
+            roastBatchPanel.add(input);
+            roasts2.add(rb);
         }
+
     }
+
+    private double getGramsPerRoast(){
+        try{
+        ResultSet rs = new DatabaseConnection().getRoastSettings();
+        while(rs.next()){
+            if (rs.getString(1).equals("gpr")){
+                return rs.getDouble(2);
+            }
+        }}catch(SQLException e){};
+        return 0;
+    }
+
+
 }
