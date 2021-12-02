@@ -22,8 +22,8 @@ public class CurrentRoastingSession {
     private int roastsNeeded;
 
 
-    //creates roasting session window
-    public JFrame OpenNewCurrentRoastingSession(int bagsWanted){
+    //creates new roasting session window
+    public JFrame OpenCurrentRoastingSession(int bagsWanted){
         //sets bags wanted and calls initilzation method
         this.bagsWanted = bagsWanted;
 
@@ -31,6 +31,16 @@ public class CurrentRoastingSession {
         newRoastingSessionInti();
         commonIntialization();
         newRoastingSessionInputInti();
+
+        return openForm();
+    }
+
+    public JFrame OpenCurrentRoastingSession(ArrayList <RoastingBatch> roasts){
+        this.roasts = roasts;
+        bagsWanted = roasts.get(1).getBagsWanted();
+
+        commonIntialization();
+        cacheRoastingSessionInputInti();
 
         return openForm();
     }
@@ -108,6 +118,57 @@ public class CurrentRoastingSession {
         }
     }
 
+    private void cacheRoastingSessionInputInti(){
+        //Creating Roast Input Form
+        for(int x=0; x< roastsNeeded; x++){
+            //Batch Numbers
+            JLabel label = new JLabel((x + 1) + ")     ");
+            label.setHorizontalAlignment(JLabel.RIGHT);
+            label.setForeground(Color.WHITE);
+            label.setFont(new Font("Calibri",Font.PLAIN,18));
+            roastBatchPanel.add(label);
+
+            //Batch Input fields and initializing Roasting Batch Objects
+            JTextField input = new JTextField(4);
+
+            RoastingBatch rb = (RoastingBatch) roasts.get(x);
+            input.setText(Double.toString(rb.getGramsProduced()));
+
+            //making it so if the Batch input is ever changed it automatically updates the RB object
+            input.getDocument().addDocumentListener(new DocumentListener() {
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    try{
+                        rb.setgramsProduced(Double.valueOf(input.getText()));}
+                    catch (NumberFormatException err){
+                        rb.setgramsProduced(0);
+                    }
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    try{
+                        rb.setgramsProduced(Double.valueOf(input.getText()));}
+                    catch (NumberFormatException err){
+                        rb.setgramsProduced(0);
+                    }
+
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    try{
+                        rb.setgramsProduced(Double.valueOf(input.getText()));}
+                    catch (NumberFormatException err){
+                        rb.setgramsProduced(0);
+                    }
+                }
+            });
+
+            //adding input field to the panel and control array list
+            roastBatchPanel.add(input);
+        }
+    }
     //method for setting up and initalizing the current roasting session
     private void commonIntialization(){
         //setting current date into roasting module

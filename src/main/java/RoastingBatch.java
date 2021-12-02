@@ -13,7 +13,19 @@ public class RoastingBatch {
         this.gramsUsed = gramsUsed;
         this.bagsWanted = bagsWanted;
         poundsUsed = DataConversion.gramsToPounds(gramsUsed);
+
+        setgramsProduced(0);
     }
+
+    public RoastingBatch(int roastNumber, double gramsUsed, int bagsWanted, double gramsProduced) {
+        this.roastNumber = roastNumber;
+        this.gramsUsed = gramsUsed;
+        this.bagsWanted = bagsWanted;
+        poundsUsed = DataConversion.gramsToPounds(gramsUsed);
+
+        setgramsProduced(gramsProduced);
+    }
+
 
     //updates grams produced and updates cache database on input change
     public void setgramsProduced(double gramsProduced) {
@@ -28,6 +40,11 @@ public class RoastingBatch {
                 gramsProduced,poundsUsed,poundsProduced,bagsWanted);
     }
 
+    public int getBagsWanted() {
+        return bagsWanted;
+    }
 
-
+    public double getGramsProduced() {
+        return gramsProduced;
+    }
 }
