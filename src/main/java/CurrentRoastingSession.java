@@ -19,14 +19,23 @@ public class CurrentRoastingSession {
     private int roastsPerBag = 2;
     private String date;
     private ArrayList roasts;
+    private int roastsNeeded;
 
 
     //creates roasting session window
-    public JFrame OpenCurrentRoastingSession(int bagsWanted){
+    public JFrame OpenNewCurrentRoastingSession(int bagsWanted){
         //sets bags wanted and calls initilzation method
         this.bagsWanted = bagsWanted;
-        intialization();
 
+        //new roasting intialization
+        newRoastingSessionInti();
+        commonIntialization();
+        newRoastingSessionInputInti();
+
+        return openForm();
+    }
+
+    private JFrame openForm(){
         //creates window and sets default size based on amount of bags being requested on default
         JFrame frame = new JFrame();
         if(bagsWanted < 4 ){
@@ -40,41 +49,15 @@ public class CurrentRoastingSession {
         return frame;
     }
 
-    //method for setting up and initalizing the current roasting session
-    private void intialization(){
+    private void newRoastingSessionInti(){
         //recreate Cache Table since starting a new roast
         new DatabaseConnection().recreateCacheTable();
 
-        //setting current date into roasting module
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-        date = LocalDate.now().format(formatter);
-        dateLabel.setText(date);
-
-        //setting bags produced and caclulating roasts needed based on the bags needed
-        bagsProducedInput.setText(Integer.toString(bagsWanted));
-        int roastsNeeded = bagsWanted * roastsPerBag;
-
-        //setting up the roasting batch pannel
-        roastBatchPanel.setLayout(new GridLayout(0,2));
-        roastBatchPanel.setBackground(Color.black);
-
-        //creating titles for roasting session
-        JLabel[] titles = new JLabel[]{new JLabel("Roast"),new JLabel("Roast Yield"),new JLabel("Number"),new JLabel("(In Grams)")};
-        for (int y = 0; y<titles.length;y++){
-            //formatting titles
-            titles[y].setHorizontalAlignment(JLabel.CENTER);
-            titles[y].setForeground(Color.WHITE);
-            titles[y].setFont(new Font("Calibri",Font.BOLD,25));
-
-            if(y == titles.length - 1){
-                titles[y].setFont(new Font("Calibri",Font.ITALIC,15)); //making "In grams" different
-            }
-            roastBatchPanel.add(titles[y]);
-        }
-
         //initalizing roasts arraylist for input
         roasts = new ArrayList<RoastingBatch>();
+    }
 
+    private void newRoastingSessionInputInti(){
         //Creating Roast Input Form
         for(int x=0; x< roastsNeeded; x++){
             //Batch Numbers
@@ -123,7 +106,36 @@ public class CurrentRoastingSession {
             roastBatchPanel.add(input);
             roasts.add(rb);
         }
+    }
 
+    //method for setting up and initalizing the current roasting session
+    private void commonIntialization(){
+        //setting current date into roasting module
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        date = LocalDate.now().format(formatter);
+        dateLabel.setText(date);
+
+        //setting bags produced and caclulating roasts needed based on the bags needed
+        bagsProducedInput.setText(Integer.toString(bagsWanted));
+        roastsNeeded = bagsWanted * roastsPerBag;
+
+        //setting up the roasting batch pannel
+        roastBatchPanel.setLayout(new GridLayout(0,2));
+        roastBatchPanel.setBackground(Color.black);
+
+        //creating titles for roasting session
+        JLabel[] titles = new JLabel[]{new JLabel("Roast"),new JLabel("Roast Yield"),new JLabel("Number"),new JLabel("(In Grams)")};
+        for (int y = 0; y<titles.length;y++){
+            //formatting titles
+            titles[y].setHorizontalAlignment(JLabel.CENTER);
+            titles[y].setForeground(Color.WHITE);
+            titles[y].setFont(new Font("Calibri",Font.BOLD,25));
+
+            if(y == titles.length - 1){
+                titles[y].setFont(new Font("Calibri",Font.ITALIC,15)); //making "In grams" different
+            }
+            roastBatchPanel.add(titles[y]);
+        }
     }
 
     //function to get the grams per roast setting from the database

@@ -17,7 +17,7 @@ public class RoastingModuleLoader {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //submits the bags wanted and creates the roasting session window
-                JFrame crs = new CurrentRoastingSession().OpenCurrentRoastingSession(Integer.valueOf(amountOfBagsWantedTextField.getText()));
+                JFrame crs = new CurrentRoastingSession().OpenNewCurrentRoastingSession(Integer.valueOf(amountOfBagsWantedTextField.getText()));
                 crs.setVisible(true);
             }
         });
@@ -28,6 +28,12 @@ public class RoastingModuleLoader {
             public void actionPerformed(ActionEvent e) {
                 JFrame rs = new RoastingSettings().OpenRoastingSettings();
                 rs.setVisible(true);
+            }
+        });
+        loadButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
             }
         });
     }
