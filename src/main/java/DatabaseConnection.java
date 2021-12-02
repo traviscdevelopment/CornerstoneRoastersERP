@@ -140,6 +140,19 @@ public class DatabaseConnection {
         }
     }
 
+    //function to return all the cache info
+    public ResultSet loadCacheSession(){
+
+        try {
+            openConnection();
+            ResultSet rs = state.executeQuery("SELECT * FROM CACHE_SESSION");
+            return rs;
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     //function to update the cache session, first it tried an insert and on failure updates the correct rows data
     public void setCacheSession(int roastNumber,double gramsUsed,
                                 double gramsProduced,double poundsUsed,double poundsProduced, int bagsWanted){
