@@ -3,6 +3,7 @@ import org.apache.derby.shared.common.error.DerbySQLIntegrityConstraintViolation
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 
 @SuppressWarnings("SqlResolve")
@@ -238,6 +239,27 @@ public class DatabaseConnection {
             ps.executeUpdate();
         }catch(SQLException e){
             e.printStackTrace();
+        }
+    }
+
+    //function that returns all past roasting sessions and their respective info
+    public ArrayList<RoastSummary> getAllPastRoasts(){
+        openConnection();
+
+        try{
+            ResultSet rs = state.executeQuery("SELECT * FROM ROAST_BATCHES");
+            ArrayList<RoastSummary> list = new ArrayList<RoastSummary>();
+
+            while(rs.next()){
+                list.add(new RoastSummary(rs.getInt(2),rs.getDouble(3),rs.getDouble(4),rs.getDouble(5),rs.getDouble(6),
+                rs.getInt(7),rs.getDouble(8),rs.getDouble(9),rs.getString(10)));
+            }
+
+            return list;
+
+        }catch(SQLException e){
+            e.printStackTrace();
+            return null;
         }
     }
 
