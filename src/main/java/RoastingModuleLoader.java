@@ -56,6 +56,14 @@ public class RoastingModuleLoader {
                 crs.setVisible(true);
             }
         });
+        roastingListButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame prsw = new PastRoastingSessionWindow().openPastRoastingSessionsWindow();
+
+                prsw.setVisible(true);
+            }
+        });
     }
 
     //method to open the roasting module loader window
