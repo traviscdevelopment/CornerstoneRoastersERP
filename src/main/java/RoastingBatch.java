@@ -47,4 +47,16 @@ public class RoastingBatch {
     public double getGramsProduced() {
         return gramsProduced;
     }
+
+    public double getGramsUsed() {
+        return gramsUsed;
+    }
+
+    public double getPoundsUsed() {
+        return poundsUsed;
+    }
+
+    public double getPoundsProduced() {
+        return poundsProduced;
+    }
 }

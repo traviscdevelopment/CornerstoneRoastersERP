@@ -12,6 +12,7 @@ public class RoastingModuleLoader {
     private JButton submitButton;
     private JButton loadButton;
     private JButton loadSettingsButton;
+    private JFrame frame;
 
 
     //action buttons for the loader
@@ -20,8 +21,12 @@ public class RoastingModuleLoader {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //submits the bags wanted and creates the roasting session window
+                try{
                 JFrame crs = new CurrentRoastingSession().OpenCurrentRoastingSession(Integer.valueOf(amountOfBagsWantedTextField.getText()));
-                crs.setVisible(true);
+                crs.setVisible(true);}
+                catch(NumberFormatException er){
+                    JOptionPane.showMessageDialog(frame,"Please Input a Whole Number");
+                }
             }
         });
 
@@ -55,7 +60,7 @@ public class RoastingModuleLoader {
 
     //method to open the roasting module loader window
     public JFrame OpenRoastingModuleLoader(){
-        JFrame frame = new JFrame();
+        frame = new JFrame();
         frame.setSize(500,300);
         frame.setContentPane(this.rml);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

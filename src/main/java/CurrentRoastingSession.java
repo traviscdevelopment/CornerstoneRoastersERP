@@ -2,6 +2,8 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -15,10 +17,57 @@ public class CurrentRoastingSession {
     private JTextField bagsProducedInput;
     private JLabel dateLabel;
     private JScrollPane roastBatchPanel1;
+
+
     private int bagsWanted;
     private String date;
     private ArrayList roasts;
+    JFrame frame;
 
+
+    public CurrentRoastingSession() {
+        closeRoastingSessionButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int amountOfRoasts = roasts.size();
+                double gramsUsed = 0;
+                double gramsProduced = 0;
+                double poundsUsed = 0;
+                double poundsProduced = 0 ;
+                int bagsProduced = Integer.valueOf(bagsProducedInput.getText());
+                double hry = 0;
+                double lry = 0;
+
+
+                for(int x = 0; x< roasts.size(); x++){
+                    RoastingBatch rb = (RoastingBatch) roasts.get(x);
+
+                    //initializing high and low roast yields for first roast and then updating totals each loop
+                    if (x == 0){
+                        hry = rb.getGramsProduced();
+                        lry = rb.getGramsProduced();
+                    }else{
+                        if(hry < rb.getGramsProduced()){
+                            hry = rb.getGramsProduced();
+                        }
+                        if(lry > rb.getGramsProduced()){
+                            lry = rb.getGramsProduced();
+                        }
+                    }
+
+                    gramsUsed += rb.getGramsUsed();
+                    gramsProduced += rb.getGramsProduced();
+                    poundsUsed += rb.getPoundsUsed();
+                    poundsProduced += rb.getPoundsProduced();
+                }
+
+                new RoastSummary(amountOfRoasts,gramsUsed,gramsProduced,poundsUsed,poundsProduced,bagsProduced,hry,lry,date);
+
+                JOptionPane.showMessageDialog(frame,"Roast Summary Saved Successfully.");
+                frame.dispose();
+            }
+        });
+    }
 
     //creates new roasting session window
     public JFrame OpenCurrentRoastingSession(int bagsWanted){
@@ -42,7 +91,7 @@ public class CurrentRoastingSession {
 
     private JFrame openForm(){
         //creates window and sets default size based on amount of bags being requested on default
-        JFrame frame = new JFrame();
+        frame = new JFrame();
         if(bagsWanted < 4 ){
             frame.setSize(500,350);
         }
@@ -121,6 +170,7 @@ public class CurrentRoastingSession {
                         rb.setgramsProduced(Double.valueOf(input.getText()));}
                     catch (NumberFormatException err){
                         rb.setgramsProduced(0);
+                        JOptionPane.showMessageDialog(frame,"Input a whole number.");
                     }
                 }
 
@@ -140,6 +190,7 @@ public class CurrentRoastingSession {
                         rb.setgramsProduced(Double.valueOf(input.getText()));}
                     catch (NumberFormatException err){
                         rb.setgramsProduced(0);
+                        JOptionPane.showMessageDialog(frame,"Input a whole number.");
                     }
                 }
             });

@@ -1,8 +1,11 @@
 import org.apache.derby.shared.common.error.DerbySQLIntegrityConstraintViolationException;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 
+@SuppressWarnings("SqlResolve")
 public class DatabaseConnection {
     //created INIT Variables
     String urlOpen = "jdbc:derby:crERP;create=true";
@@ -33,6 +36,7 @@ public class DatabaseConnection {
             //sets found tables booleans to false
             boolean roastSettings = false;
             boolean cacheSession = false;
+            boolean roastBatches = false;
 
             openConnection();
 
@@ -48,6 +52,9 @@ public class DatabaseConnection {
                 if (rs.getString("TABLE_NAME").equals("CACHE_SESSION")){
                     cacheSession = true;
                 }
+                if (rs.getString("TABLE_NAME").equals("ROAST_BATCHES")){
+                    roastBatches = true;
+                }
             }
 
             //creates tables not found
@@ -57,7 +64,9 @@ public class DatabaseConnection {
             if(!cacheSession){
                 createCacheSession();
             }
-
+            if(!roastBatches){
+                createRoastBatches();
+            }
 
 
 
@@ -185,6 +194,49 @@ public class DatabaseConnection {
             }
         }
         catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    //creates and initalizes the roast batch summary table
+    private void createRoastBatches() throws SQLException {
+        state.execute("create table roast_batches(roast_ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),amount_of_roasts SMALLINT, " +
+                "grams_used DOUBLE, grams_produced DOUBLE, pounds_used DOUBLE, pounds_produced DOUBLE, bags_produced SMALLINT, " +
+                "hry DOUBLE, LRY DOUBLE,roasting_date VARCHAR(10))");
+        PreparedStatement ps = conn.prepareStatement("insert into roast_batches (AMOUNT_OF_ROASTS, GRAMS_USED, GRAMS_PRODUCED, POUNDS_USED, POUNDS_PRODUCED, BAGS_PRODUCED, HRY, LRY, ROASTING_DATE) values(?,?,?,?,?,?,?,?,?)");
+
+        ps.setInt(1,4);
+        ps.setDouble(2,1000);
+        ps.setDouble(3,838);
+        ps.setDouble(4,2.20462);
+        ps.setDouble(5,1.84747);
+        ps.setInt(6,2);
+        ps.setDouble(7,210);
+        ps.setDouble(8, 208);
+
+        LocalDate date = LocalDate.of(2021,12,2);
+
+        ps.setString(9, date.toString());
+        ps.executeUpdate();
+    }
+
+    public void insertRoastBatches(RoastSummary roastSummary){
+        try{
+            openConnection();
+
+            PreparedStatement ps = conn.prepareStatement("insert into roast_batches (AMOUNT_OF_ROASTS, GRAMS_USED, GRAMS_PRODUCED, POUNDS_USED, POUNDS_PRODUCED, BAGS_PRODUCED, HRY, LRY, ROASTING_DATE) values(?,?,?,?,?,?,?,?,?)");
+
+            ps.setInt(1,roastSummary.getAmountOfRoasts());
+            ps.setDouble(2,roastSummary.getGramsUsed());
+            ps.setDouble(3,roastSummary.getGramsProduced());
+            ps.setDouble(4,roastSummary.getPoundsUsed());
+            ps.setDouble(5,roastSummary.getPoundsProduced());
+            ps.setInt(6,roastSummary.getBagsProduced());
+            ps.setDouble(7,roastSummary.getHry());
+            ps.setDouble(8, roastSummary.getLry());
+            ps.setString(9, roastSummary.getRoastingDate());
+            ps.executeUpdate();
+        }catch(SQLException e){
             e.printStackTrace();
         }
     }

@@ -46,7 +46,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value="10"/>
+              <text value="Amount of Bags"/>
             </properties>
           </component>
           <component id="54add" class="javax.swing.JButton" binding="submitButton" default-binding="true">
