@@ -61,7 +61,7 @@ public class CurrentRoastingSession {
                     poundsProduced += rb.getPoundsProduced();
                 }
 
-                new RoastSummary(amountOfRoasts,gramsUsed,gramsProduced,poundsUsed,poundsProduced,bagsProduced,hry,lry,date);
+                new RoastSummary(amountOfRoasts,gramsUsed,gramsProduced,poundsUsed,poundsProduced,bagsProduced,hry,lry,date).saveRoastSummary();
 
                 JOptionPane.showMessageDialog(frame,"Roast Summary Saved Successfully.");
                 frame.dispose();

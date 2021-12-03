@@ -21,7 +21,9 @@ public class RoastSummary {
         this.hry = hry;
         this.lry = lry;
         this.roastingDate = roastingDate;
+    }
 
+    public void saveRoastSummary(){
         new DatabaseConnection().insertRoastBatches(this);
     }
 
