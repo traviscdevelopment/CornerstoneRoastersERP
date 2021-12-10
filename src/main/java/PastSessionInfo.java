@@ -16,7 +16,7 @@ public class PastSessionInfo {
         roastDateLabel.setText(rs.getRoastingDate());
         amrLabel.setText(String.valueOf(rs.getAmountOfRoasts()));
         gramsUsedLabel.setText(String.valueOf(rs.getGramsUsed()));
-        gramsProducedLabel.setText(String.valueOf(rs.getPoundsUsed()));
+        gramsProducedLabel.setText(String.valueOf(rs.getGramsProduced()));
         poundsUsedLabel.setText(String.valueOf(rs.getPoundsUsed()));
         poundsProducedLabel.setText(String.valueOf(rs.getPoundsProduced()));
         bagsProducedLabel.setText(String.valueOf(rs.getBagsProduced()));
